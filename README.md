@@ -1,0 +1,68 @@
+# Next Level Week #05 - Rocketseat
+Todos os códigos realizados na Next Level Week, edição #05 da Rocketseat.
+
+#projeto-nlw
+Configuracoes iniciais do ambiente: https://www.notion.so/Configura-es-do-ambiente-d0fcddac0de642fb99fca7d8dbd28cc3
+
+- Criando a pasta do projeto:
+
+```mkdir projeto_nlw```
+
+```cd projeto_nlw```
+
+```code .```
+
+- Iniciando o projeto: ```yarn init -y```
+
+Esse comando inicia o projeto com configuracoes padrao, utilizando o Yarn.
+O arquivo package.json fica da seguinte forma:
+
+```
+{
+  "name": "projeto_nlw",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT"
+}
+```
+
+- Proximo passo e instalar as dependencias do Express: ```yarn add express```
+
+Quando add/instalamos uma dependencia, ela add o diretorio da "node_modules" ao projeto.
+
+- Criaremos agora um diretorio chamado "src":
+
+```mkdir src```
+
+```cd src```
+
+- Na pasta src, criamos nosso server, "server.ts", e add o express por import: ```import express from "express"```
+
+Note que, haverao 3 pontos logo abaixo de "express", isso quer dizer que apesar de termos instalado a dependencia, nao foram add as tipagens da mesma: ```yarn add @types/express -D```
+
+O "-D", e para especificar que e uma dependencia de desenvolvimento/develop.
+
+- Agora, instalamos o TypeScript: ```yarn add typescript -D```
+
+So utilizamos o TypeScript em ambiente de develop.
+
+- ```yarn tsc --init```
+
+Esse comando criara um arquivo de configuracao do TS com algumas informacoes sobre a dependencia.
+
+- A primeira alteracao nesse arquivo tsconfig.json, e definir o "strict" como false, ja que utilizando o TS, ja temos todas as verificacoes de tipagem e etc.
+
+- Agora, instalamos outra dependencia para o TS entender algumas sintaxes, cmo a do import/export:
+```yarn add tsc-node-dev -D```
+
+- Agora podemos add nossos "scripts" no package.json, cmo vemos a seguir (add logo antes de "dependencies: "):
+
+```
+"scripts": {
+	"dev": "ts-node-dev src/server.ts"
+},
+```
+
+Obs.: Lembrando que, o ts-node-dev, assim cmo o Nodemon, possui auto-reload com o salvamento de alteracoes no codigo, entao nao e necessario executar o codigo ```yarn dev``` toda vez que alterar o codigo.
+
+### Pronto, com isso, a configuracao inicial da nossa API esta completa!
