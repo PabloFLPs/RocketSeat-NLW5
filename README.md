@@ -70,7 +70,7 @@ Obs.: Lembrando que, o ts-node-dev, assim cmo o Nodemon, possui auto-reload com 
 
 # Config Database
 
-## Configurando o typeorm:
+### Configurando o typeorm:
 - Adicionamos o "typeorm", um framework que utiliza TS para relacionamento de objetos executado em NodeJS. (ORM - _Object Relation Mapping_).
 
 ```yarn ad typeorm reflect-metadata sqlite3```
@@ -94,7 +94,7 @@ createConnection();
 
 - O que sao migrations? Sao o que forma um historico de modificacoes realizada na configuracao do banco de dados, para manter um padrao de alteracoes e permitir que outra maquina consiga executar o seu codigo.
 
-## Configurando as migrations:
+### Configurando as migrations:
 - Add o seguinte ao arquivo ormconfig.ts:
 ```
 ,
@@ -116,7 +116,7 @@ E tbm, add o seguinte ao arquivo de ormconfig.ts:
 }
 ```
 
-## Criando as migrations:
+### Criando as migrations:
 - Optamos por criar primeiramente, a migration para a tabela de Settings. Para isso, basta digitar no terminal:
 ```yarn typeorm migration:create -n CreateSettings```
 
