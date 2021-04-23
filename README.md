@@ -1,5 +1,5 @@
 # Next Level Week #05 - Rocketseat
-	Todo o projeto realizado na NLW #05. Inclusive, esse README.md, foi feito por mim e inclui exatamente todas as etapas realizadas desde a "estaca zero". Entao bora logo de "Faaaaala Dev!", e #letscode.
+Todo o projeto realizado na NLW #05. Inclusive, esse README.md, foi feito por mim e inclui exatamente todas as etapas realizadas desde a "estaca zero". Entao bora logo de "Faaaaala Dev!", e #letscode.
 
 # projeto-nlw
 Configuracoes iniciais do ambiente: https://www.notion.so/Configura-es-do-ambiente-d0fcddac0de642fb99fca7d8dbd28cc3
