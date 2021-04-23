@@ -66,3 +66,111 @@ Esse comando criara um arquivo de configuracao do TS com algumas informacoes sob
 Obs.: Lembrando que, o ts-node-dev, assim cmo o Nodemon, possui auto-reload com o salvamento de alteracoes no codigo, entao nao e necessario executar o codigo ```yarn dev``` toda vez que alterar o codigo.
 
 ### Pronto, com isso, a configuracao inicial da nossa API esta completa!
+
+
+# Config Database
+
+## Configurando o typeorm:
+- Adicionamos o "typeorm", um framework que utiliza TS para relacionamento de objetos executado em NodeJS. (ORM - _Object Relation Mapping_).
+
+```yarn ad typeorm reflect-metadata sqlite3```
+
+- Entao a gnt cria um arquivo de configuracao do ORM, "ormconfig.json" na raiz do projeto; e add ao arquivo:
+```
+{
+  "type": "sqlite"
+}
+```
+
+- Criamos uma pasta chamada "database" dentro de "src", e cm isso, dentro de database, criamos um arquivo index.ts com o seguinte:
+```
+import { createConnection } from "typeorm"; 
+
+createConnection();
+```
+
+- Agora, precisamos importar o conteudo do database no nosso server.ts:
+```import "./database";```
+
+- O que sao migrations? Sao o que forma um historico de modificacoes realizada na configuracao do banco de dados, para manter um padrao de alteracoes e permitir que outra maquina consiga executar o seu codigo.
+
+## Configurando as migrations:
+- Add o seguinte ao arquivo ormconfig.ts:
+```
+,
+  "database": "./src/database/database.sqlite",
+  "migrations": ["./src/database/migrations/**.ts"]
+```
+
+- Agora add um script para as migrations junto ao typeorm:
+```
+,
+    "typeorm": "ts-node-dev node_modules/typeorm/cli.js"
+```
+
+E tbm, add o seguinte ao arquivo de ormconfig.ts:
+```
+,
+"cli": {
+	"migrationsDir": "./src/database/migrations"
+}
+```
+
+## Criando as migrations:
+- Optamos por criar primeiramente, a migration para a tabela de Settings. Para isso, basta digitar no terminal:
+```yarn typeorm migration:create -n CreateSettings```
+
+- Feito isso, alteraremos os metodos da migration criada para criar as colunas que queremos:
+```
+import {MigrationInterface, QueryRunner, Table} from "typeorm";
+
+export class CreateSettings1619208995786 implements MigrationInterface {
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.createTable(
+            new Table({
+                nome: "settings",
+                columns: [
+                    {
+                        name: "id",
+                        type: "uuid", /* Unique Universal ID*/
+                        isPrimary: true
+                    },
+                    {
+                        name: "username",
+                        type: "varchar"
+                    },
+                    {
+                        name: "chat",
+                        type: "boolean",
+                        default: true
+                    },
+                    {
+                        name: "updated_at",
+                        type: "timestamp",
+                        default: "now()"
+                    },
+                    {
+                        name: "created_at",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                ]
+            })
+        )
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.dropTable("settings");
+    }
+
+}
+
+```
+
+- Para rodar a migration, executamos:
+```yarn typeorm migration:run```
+
+Vimos que esse comando criou um arquivo database.sqlite.
+
+- 
