@@ -116,7 +116,7 @@ E tbm, add o seguinte ao arquivo de ormconfig.ts:
 }
 ```
 
-### Criando as migrations:
+## Criando as migrations:
 - Optamos por criar primeiramente, a migration para a tabela de Settings. Para isso, basta digitar no terminal:
 ```yarn typeorm migration:create -n CreateSettings```
 
@@ -171,6 +171,205 @@ export class CreateSettings1619208995786 implements MigrationInterface {
 - Para rodar a migration, executamos:
 ```yarn typeorm migration:run```
 
-Vimos que esse comando criou um arquivo database.sqlite.
+Esse comando cria um arquivo database.sqlite.
 
-- 
+## Criando as entidades:
+- Criamos uma pasta chamada "entities" em "src", e add o seguinte codigo ao arquivo criado, chamado "Setting.ts":
+```
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn } from "typeorm"
+
+@Entity("settings")
+class Setting {
+
+  @PrimaryColumn()
+  id: string;
+
+  @Column()
+  username: string;
+
+  @Column()
+  chat: boolean;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @CreateDateColumn()
+  created_at: Date;
+}
+
+export { Setting }
+```
+
+O codigo dara erro, por isso, alteraremos o arquivo tsconfig.json (na documentacao do typeorm, ele pede p habilitarmos os decorators do tsconfig.json, isso e o que faremos):
+```
+"experimentalDecorators": true,              /* Enables experimental support for ES7 decorators. */
+"emitDecoratorMetadata": true,               /* Enables experimental support for emitting type metadata for decorators. */
+
+```
+
+Feito isso, os erros/warnings do arquivo Setting.ts sumiram.
+
+- Agora, optamos por configurar o UUID do "id" das tabelas no proprio projeto, ou seja, deixar isso a cargo do nosso projeto. Isso traz a vantagem de ficar independente do tipo de banco sendo utilizado. 
+
+Add entao a dependencia uuid, cm o seguinte comando:
+```yarn add uuid```
+
+E entao, add as tipagens em ambiente de developer:
+```yarn add @types/uuid -D```
+
+- Add o seguinte import ao codigo da Setting.ts:
+```import { v4 as uuid } from "uuid"```
+
+"v4" e a versao que utilizaremos para gerar nosso uuid, e chamaremos ele de "uuid" atraves do "as".
+
+- Agora, no final de nossa classe, add o metodo construtor:
+```
+constructor(){
+    if(!this.id){
+    	this.id = uuid();
+    }
+}
+```
+
+- Para finalizar a configuracao, mapeamos as entidades no nosso ormconfig.json. Entao para isso, adicionamos:
+```
+,
+  "entities": ["./src/entities/**.ts"]
+```
+
+````yarn dev```, se der ok, tudo nos conformes.
+
+## Criando os repositorios:
+- - Criamos uma pasta chamada "repositories" em "src", e add o seguinte codigo ao arquivo criado, chamado "SettingsRepository.ts:
+```
+import {
+  Repository,
+  EntityRepository
+} from "typeorm";
+
+import { Setting } from "../entities/Setting";
+
+@EntityRepository(Setting)
+class SettingsRepository extends Repository<Setting>{
+
+}
+
+export { SettingsRepository }
+```
+
+## Criando as rotas:
+- Criamos um arquivo "routes.ts" na raiz (src), e add o seguinte:
+```
+import {
+  Router
+} from "express";
+
+import { getCustomRepository } from "typeorm";
+import { SettingsRepository } from "./repositories/SettingsRepository";
+
+const routes = Router();
+
+/**
+ * Tipos de parametros:
+ * Routes Params => parametros de rotas;
+ * http://localhost:3000/settings/1
+ * Query Params => filtros e buscas;
+ * http://localhost:3000/settings/1?search=algumacoisa
+ * Body params => {  }
+ */
+
+routes.post("/settings", async (request, response) => {
+  const { chat, username } = request.body;
+
+  const settingsRepository = getCustomRepository(SettingsRepository);
+
+  const settings = settingsRepository.create({
+    chat,
+    username
+  });
+
+  await settingsRepository.save(settings);
+
+  return response.json(settings);
+})
+
+export { routes };
+```
+
+- Agora, importamos esse arquivo de rotas no nosso server.ts e add o app.use:
+```import { routes } from "./routes";```
+```app.use(routes);```
+
+- Testando com o Insomnia (http://localhost:3000/settings), com json da seguinte forma:
+```
+{
+	"chat": true,
+	"username": "admin"
+}
+```
+
+Da erro. Precisamos especificar para nosso express, que as requisicoes podem ser json. Para isso, basta add ao "server.ts", o seguinte:
+```app.use(express.json());```
+
+- Com isso, retornando ao Insomnia e realizando a mesma operacao de novo, temos:
+```
+{
+  "id": "7ddb9f52-796c-4729-bdfa-48ea0250ca32",
+  "username": "admin",
+  "chat": true,
+  "updated_at": "2021-04-24T08:29:49.000Z",
+  "created_at": "2021-04-24T08:29:49.000Z"
+}
+```
+
+- Para finalizar, alteraremos o routes.ts, criando um diretorio "controllers" em "src" e nesta, um arquivo "SettingsController.ts".
+
+O arquivo SettingsController.ts devera ficar assim:
+```
+import { Request, Response } from "express";
+import { getCustomRepository } from "typeorm";
+import { SettingsRepository } from "../repositories/SettingsRepository";
+
+class SettingsController{
+
+  /**
+   * Tipos de parametros:
+   * Routes Params => parametros de rotas;
+   * http://localhost:3000/settings/1
+   * Query Params => filtros e buscas;
+   * http://localhost:3000/settings/1?search=algumacoisa
+   * Body params => {  }
+   */
+
+  async create(request, response){
+    const { chat, username } = request.body;
+
+    const settingsRepository = getCustomRepository(SettingsRepository);
+
+    const settings = settingsRepository.create({
+      chat,
+      username
+    });
+
+    await settingsRepository.save(settings);
+
+    return response.json(settings);
+  }
+}
+
+export { SettingsController }
+```
+
+O arquivo routes.ts devera ficar assim:
+```
+import { Router } from "express";
+import { SettingsController } from "./controllers/SettingsController";
+
+const routes = Router();
+
+const settingsController = new SettingsController();
+
+routes.post("/settings", settingsController.create)
+
+export { routes };
+```
