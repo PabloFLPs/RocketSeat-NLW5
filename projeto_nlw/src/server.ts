@@ -1,4 +1,7 @@
-import express from "express"
+import express from "express";
+
+import "./database";
+import { routes } from "./routes";
 
 const app = express();
 
@@ -10,6 +13,7 @@ const app = express();
  * PATCH = Alterar uma informação específica
  */
 
+//#####################################################################
 app.get("/", (request, response) => {
   return response.json({
     message: "NLW#05 - Faaala Dev!",
@@ -25,6 +29,11 @@ app.post("/users", (request, response) => {
   /* Por padrao, navegadores utilizam sempre GET cmo requisições,
   entao, para testar a rota de /users, utilizamos o Insomnia. */
 });
+//#####################################################################
+
+app.use(express.json());
+
+app.use(routes);
 
 //Somente o "app.listen(3000);" ja serviria para rodar a aplicação.
 app.listen(3000, () => console.log("Server is running on port 3000."));
