@@ -67,6 +67,7 @@ Obs.: Lembrando que, o ts-node-dev, assim cmo o Nodemon, possui auto-reload com 
 
 ### Pronto, com isso, a configuracao inicial da nossa API esta completa!
 
+# Day #01 Done!
 
 # Config Database
 
@@ -373,3 +374,5 @@ routes.post("/settings", settingsController.create)
 
 export { routes };
 ```
+
+# Day #02 Done!
