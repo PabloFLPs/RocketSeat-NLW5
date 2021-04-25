@@ -175,6 +175,9 @@ export class CreateSettings1619208995786 implements MigrationInterface {
 Esse comando cria um arquivo database.sqlite.
 
 ## Criando as entidades:
+
+[BD Diagram](./Entities - BD Diagram.png)
+
 - Criamos uma pasta chamada "entities" em "src", e add o seguinte codigo ao arquivo criado, chamado "Setting.ts":
 ```
 import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn } from "typeorm"
