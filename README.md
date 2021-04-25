@@ -176,7 +176,7 @@ Esse comando cria um arquivo database.sqlite.
 
 ## Criando as entidades:
 
-<img src="/Entities - BD Diagram.png" alt="BD Diagram" width="500" height="350"/>
+<img src="/Entities_DatabaseDiagram.png" alt="Database Diagram" width="75%" height="75%" align="middle"/>
 
 - Criamos uma pasta chamada "entities" em "src", e add o seguinte codigo ao arquivo criado, chamado "Setting.ts":
 ```
